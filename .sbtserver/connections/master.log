@@ -1,0 +1,8 @@
+New log file opened at Sat Oct 29 12:12:07 PDT 2016 by 27722@kasamatsu
+Taking next connection to: 41523
+Checking to see if clients are empty...
+No non-daemon clients connected after 3 min. Shutting down.
+Server socket thread exiting.
+0 clients open, will close them...
+All client sockets have been closed.
+Closing the 27722@kasamatsu logs at Sat Oct 29 12:15:07 PDT 2016, goodbye.
