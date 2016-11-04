@@ -1,28 +1,21 @@
 package ai
 
 import ai.frontier._
-import scala.collection.mutable.Set
 
 object Search {
-  private def search[A](frontier: Frontier[A])(graph: Graph[A], start: Node[A]): Path[A] = {
-    var visited = Set[Node[A]]()
-    frontier.add(start)
-
-    while (!frontier.isEmpty()) {
-      val node = frontier.next()
-      if (graph.isGoal(node)) {
-        return new Path(node)
+  private def search[A](frontier: Frontier[A])(graph: Graph[A], start: Node[A]): Node[A] = {
+    def searchRec[A](frontier: Frontier[A])(graph: Graph[A], current: Node[A], visited: Set[Node[A]]): Node[A] =
+      if (graph.isGoal(current))
+        current
+      else {
+        graph.children(current).filter(!visited.contains(_)).foreach(frontier.add(_))
+        if (frontier.hasNext)
+          searchRec(frontier)(graph, frontier.next, visited + current)
+        else
+          null
       }
 
-      for (successor <- graph.children(node)) {
-        if (!(visited contains successor))
-          frontier.add(successor)
-      }
-
-      visited += node
-    }
-
-    return new Path(null)
+    searchRec(frontier)(graph, start, Set[Node[A]]())
   }
 
   def depthFirst[A] = search(new DepthFirstFrontier[A]()) _

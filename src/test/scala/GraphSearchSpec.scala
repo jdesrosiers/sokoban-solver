@@ -6,7 +6,7 @@ class GraphSearchSpec extends FlatSpec with Matchers {
   val graph = new RomaniaGraph
 
   "Search from NewYork -> Bucharest" should "have no path" in {
-    Search.depthFirst(graph, graph.get('NewYork)).states should be (Nil)
+    Search.depthFirst(graph, graph.get('NewYork)) should be (null)
   }
 
   "Search from Bucharest -> Bucharest" should "be Bucharest" in {
