@@ -1,15 +1,41 @@
 package ai.frontier
 
 import ai.Node
-import scala.collection.mutable.PriorityQueue
+import scala.collection.immutable.SortedSet
 
 class GreedyBestFirstFrontier[A] extends Frontier[A] {
-  var frontier = PriorityQueue[Node[A]]()
+  var frontier = SortedSet[Node[A]]()
+  var visited = Map[A, Node[A]]()
 
   def hasNext = !frontier.isEmpty
-  def next() = frontier.dequeue
-  def add(node: Node[A]): Unit = frontier.enqueue(node)  // TODO: Don't add if there is a better node already queued
 
-  implicit def ordering[N <: Node[A]]: Ordering[N] = Ordering.by((node: N) => node.h).reverse
+  def next() = {
+    val next = frontier.head
+    frontier = frontier.tail
+    visited = visited + (next.state -> next)
+    //println("Visited", visited.map({ case (k, v) => (v.state, v.g)}))
+    next
+  }
+
+  def add(node: Node[A]): Unit = {
+    frontier = visited.get(node.state) match {
+      case Some(existing) if node.h > existing.h => frontier
+      case _ =>
+        frontier.find(_ == node) match {
+          case Some(existing) if node.h > existing.h => frontier
+          case Some(existing) => frontier - existing + node
+          case _ => frontier + node
+        }
+    }
+  }
+
+  override def toString = frontier.map(n => (n.state, n.h)).toString
+
+  implicit def ordering[N <: Node[A]]: Ordering[N] = new Ordering[N] {
+    override def compare(x: N, y: N): Int =
+      if (x.state == y.state) 0
+      else if (x.h < y.h) -1
+      else 1
+  }
 }
 

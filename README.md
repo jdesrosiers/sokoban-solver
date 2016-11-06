@@ -27,11 +27,3 @@ create a SokobanGraph.  We can easily implment different heuristics by extending
 SokobanGraph and overriding the `h` function.  A RomaniaGraph is implemented for
 testing and as an example.
 
-
-TODO
-----
-* When adding a node to the frontier in UniformCost, GreedyBestFirst, and AStar,
-  it needs to check if the node already exists on the queue.  If it exists and
-  the existing node has a lower f value, then new node should be discarded.
-  Otherwise, the new node should replace the existing node.
-
