@@ -31,11 +31,6 @@ class UniformCostFrontier[A] extends Frontier[A] {
 
   override def toString = frontier.map(n => (n.state, n.g)).toString
 
-  implicit def ordering[N <: Node[A]]: Ordering[N] = new Ordering[N] {
-    override def compare(x: N, y: N): Int =
-      if (x.state == y.state) 0
-      else if (x.g < y.g) -1
-      else 1
-  }
+  implicit def ordering[N <: Node[A]]: Ordering[N] = Ordering.by(_.g)
 }
 

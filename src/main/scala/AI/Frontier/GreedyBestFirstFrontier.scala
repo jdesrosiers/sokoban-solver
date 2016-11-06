@@ -31,11 +31,6 @@ class GreedyBestFirstFrontier[A] extends Frontier[A] {
 
   override def toString = frontier.map(n => (n.state, n.h)).toString
 
-  implicit def ordering[N <: Node[A]]: Ordering[N] = new Ordering[N] {
-    override def compare(x: N, y: N): Int =
-      if (x.state == y.state) 0
-      else if (x.h < y.h) -1
-      else 1
-  }
+  implicit def ordering[N <: Node[A]]: Ordering[N] = Ordering.by(_.h)
 }
 

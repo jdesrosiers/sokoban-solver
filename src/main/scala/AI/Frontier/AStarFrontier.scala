@@ -31,11 +31,6 @@ class AStarFrontier[A] extends Frontier[A] {
 
   override def toString = frontier.map(n => (n.state, n.g + n.h)).toString
 
-  implicit def ordering[N <: Node[A]]: Ordering[N] = new Ordering[N] {
-    override def compare(x: N, y: N): Int =
-      if (x.state == y.state) 0
-      else if (x.g + x.h < y.g + y.h) -1
-      else 1
-  }
+  implicit def ordering[N <: Node[A]]: Ordering[N] = Ordering.by(n => n.g + n.h)
 }
 

@@ -18,9 +18,10 @@ object Search {
         //println("Path", current.states)
         if (frontier.hasNext)
           searchRec(frontier, graph, frontier.next)
-        else
+        else {
           //println("No solution found")
           null // No solution found
+        }
       }
     }
 
