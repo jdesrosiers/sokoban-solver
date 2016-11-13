@@ -1,4 +1,4 @@
-package ai
+package ai.search
 
 trait Graph[A] {
   def get(state: A): Node[A]

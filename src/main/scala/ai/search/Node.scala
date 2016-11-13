@@ -1,10 +1,12 @@
-package ai
+package ai.search
 
 case class Node[A](parent: Node[A], operation: Symbol, state: A, g: Float, h: Float) {
   override def equals(o: Any) = o match {
     case Node(_, _, `state`, _, _) => true
     case _ => false
   }
+
+  val f = g + h
 
   override def hashCode = (state).##
 
