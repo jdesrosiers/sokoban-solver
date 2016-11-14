@@ -31,4 +31,3 @@ class GreedyBestFirstGraphFrontier[A <: Comparable[A]] extends Frontier[A] {
     }
   }
 }
-

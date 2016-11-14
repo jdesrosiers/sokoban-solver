@@ -76,34 +76,33 @@ class RomaniaGraph extends Graph[String] {
   )
 
   val strLineDist = Map(
-    "Arad" -> 366,
-    "Bucharest" -> 0,
-    "Craiova" -> 160,
-    "Dobreta" -> 242,
-    "Eforie" -> 161,
-    "Fagaras" -> 178,
-    "Giurgiu" -> 77,
-    "Hirsova" -> 151,
-    "Iasi" -> 226,
-    "Lugoj" -> 244,
-    "Mehadia" -> 241,
-    "Neamt" -> 234,
-    "Oradea" -> 380,
-    "Pitesti" -> 98,
-    "RimnicuVilcea" -> 193,
-    "Sibiu" -> 253,
-    "Timisoara" -> 329,
-    "Urziceni" -> 80,
-    "Vaslui" -> 199,
-    "Zerind" -> 374
+    "Arad" -> 366.0,
+    "Bucharest" -> 0.0,
+    "Craiova" -> 160.0,
+    "Dobreta" -> 242.0,
+    "Eforie" -> 161.0,
+    "Fagaras" -> 178.0,
+    "Giurgiu" -> 77.0,
+    "Hirsova" -> 151.0,
+    "Iasi" -> 226.0,
+    "Lugoj" -> 244.0,
+    "Mehadia" -> 241.0,
+    "Neamt" -> 234.0,
+    "Oradea" -> 380.0,
+    "Pitesti" -> 98.0,
+    "RimnicuVilcea" -> 193.0,
+    "Sibiu" -> 253.0,
+    "Timisoara" -> 329.0,
+    "Urziceni" -> 80.0,
+    "Vaslui" -> 199.0,
+    "Zerind" -> 374.0
   )
 
-  def g(from: String, to: String): Float = dist((from, to))
-  def h(state: String): Float = strLineDist(state)
-  def get(state: String): Node[String] = Node(null, 'start, state, 0, strLineDist("Bucharest"))
-  def successors(state: String): List[(Symbol, String)] = graph.get(state) match {
-    case Some(x) => x.map(state => ('travel, state))
+  def g(from: String, to: String) = dist((from, to))
+  def h(state: String) = strLineDist.getOrElse(state, Double.MaxValue)
+  def successors(state: String) = graph.get(state) match {
+    case Some(x) => x.map(state => ('Travel, state))
     case None => Nil
   }
-  def isGoal(node: Node[String]): Boolean = node.state == "Bucharest"
+  def isGoal(node: Node[String]) = node.state == "Bucharest"
 }
