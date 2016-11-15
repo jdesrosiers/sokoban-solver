@@ -6,11 +6,11 @@ import scala.annotation.tailrec
 object Search {
   private def search[A <: Comparable[A]](frontier: Frontier[A])(graph: Graph[A], start: Node[A]) = {
     @tailrec
-    def searchRec[A](frontier: Frontier[A], graph: Graph[A]): Node[A] =
+    def searchRec(frontier: Frontier[A], graph: Graph[A]): Node[A] =
       if (frontier.isEmpty) null
       else if (graph.isGoal(frontier.head)) frontier.head
       else {
-        graph.children(frontier.next).foreach(frontier.add(_))
+        graph.children(frontier.next).foreach(frontier.add)
         searchRec(frontier, graph)
       }
 

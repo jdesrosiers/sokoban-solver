@@ -4,7 +4,7 @@ import org.scalatest._
 import ai.search.{Search, DefaultHeuristic}
 import scala.io.Source
 
-class SokobanBreadthFirstSearchSpec extends FlatSpec with Matchers {
+class SokobanBreadthFirstSpec extends FlatSpec with Matchers {
 	def loadLevel(filename: String) = {
     val initializer = new Initializer(Source.fromFile(filename))
     (new SokobanGraph(initializer.game, DefaultHeuristic()), initializer.gameState)

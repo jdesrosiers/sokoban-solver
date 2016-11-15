@@ -1,6 +1,6 @@
 package ai.sokoban
 
-case class GameState(val player: Point, boxes: Set[Point]) extends Comparable[GameState] {
+case class GameState(player: Point, boxes: Set[Point]) extends Comparable[GameState] {
   def isBox(point: Point): Boolean = boxes contains point
 
   def move(game: Game, direction: Symbol): GameState = {

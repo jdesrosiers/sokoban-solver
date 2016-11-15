@@ -1,6 +1,7 @@
 package ai.search.frontier
 
 import ai.search.Node
+
 import scala.collection.mutable.SortedSet
 import scala.collection.mutable.Set
 import scala.collection.mutable.Map
@@ -21,11 +22,11 @@ class AStarGraphFrontier[A <: Comparable[A]] extends Frontier[A] {
   def add(node: Node[A]): Unit = {
     discovered.get(node.state) match {
       case Some(existing) if node.f < existing.f =>
-        discovered.put(node.state, node);
-        frontier.remove(existing);
+        discovered.put(node.state, node)
+        frontier.remove(existing)
         frontier.add(node)
       case None =>
-        discovered.put(node.state, node);
+        discovered.put(node.state, node)
         frontier.add(node)
       case _ => ()
     }

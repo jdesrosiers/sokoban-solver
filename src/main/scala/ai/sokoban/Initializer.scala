@@ -13,7 +13,7 @@ class Initializer(serializedBoard: Source) {
 
   private def toPoint(point: Array[Int]): Point = Point(point(0), point(1))
   private def parseLine(line: String): Array[Int] = line.split(" ").map(_.toInt)
-  private def toPoints(input: Array[Int]): Iterator[Point] = input.tail.sliding(2, 2).map(toPoint _)
+  private def toPoints(input: Array[Int]): Iterator[Point] = input.tail.sliding(2, 2).map(toPoint)
 
   val game = Game(size, walls, storage)
   val gameState = GameState(player, boxes)

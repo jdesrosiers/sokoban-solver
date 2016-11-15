@@ -1,6 +1,7 @@
 package ai.search.frontier
 
 import ai.search.Node
+
 import scala.collection.mutable.Stack
 import scala.collection.mutable.Set
 
