@@ -17,23 +17,17 @@ class SokobanBoxDistanceSpec extends FlatSpec with Matchers {
     //println("Level 15: " + path.map(_.name).mkString(" "))
   }
 
-  "CountGoals on level-example4" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level-example4")
+  "CountGoals on level20" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level20")
     val path = Search.aStar(graph, graph.get(initialState)).operations
-    //println("Example 4 Boxes: " + path.map(_.name).mkString(" "))
-  }
-
-  "CountGoals on level-example5" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level-example5")
-    val path = Search.aStar(graph, graph.get(initialState)).operations
-    //println("Example 5 Boxes: " + path.map(_.name).mkString(" "))
+    //println("Level 20: " + path.map(_.name).mkString(" "))
   }
 
   /*
-  "CountGoals on level-example6" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level-example6")
+  "CountGoals on level25" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level25")
     val path = Search.aStar(graph, graph.get(initialState)).operations
-    println("Example 6 Boxes: " + path.map(_.name).mkString(" "))
+    //println("Level 25: " + path.map(_.name).mkString(" "))
   }
 
   "CountGoals on level-example7" should "be fast" in {
@@ -45,13 +39,7 @@ class SokobanBoxDistanceSpec extends FlatSpec with Matchers {
   "CountGoals on level50" should "be fast" in {
     val (graph, initialState) = loadLevel("resources/level50")
     val path = Search.aStar(graph, graph.get(initialState)).operations
-    println("Example: " + path.map(_.name).mkString(" "))
-  }
-
-  "CountGoals on level100" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level100")
-    val path = Search.aStar(graph, graph.get(initialState)).operations
-    println("Example: " + path.map(_.name).mkString(" "))
+    println("Level 59: " + path.map(_.name).mkString(" "))
   }
   */
 }
