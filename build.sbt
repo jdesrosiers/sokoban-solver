@@ -3,6 +3,10 @@ name := """sokoban"""
 version := "1.0"
 
 scalaVersion := "2.11.6"
+javaOptions += "-Xms512M"
+javaOptions += "-Xmx1G"
+fork in Test := true
+fork in run := true
 
 lazy val akkaVersion = "2.4.0"
 

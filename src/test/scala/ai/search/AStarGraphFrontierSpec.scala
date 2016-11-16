@@ -1,14 +1,13 @@
-package ai.search.frontier
+package ai.search
 
 import org.scalatest._
-import ai.search.Node
 
 class AStarGraphFrontierSpec extends FlatSpec with BeforeAndAfterEach with Matchers {
 
 	private var frontier: Frontier[String] = _
 
 	override def beforeEach() {
-		frontier = new AStarGraphFrontier[String]()
+		frontier = Frontier.aStar[String]
 	}
 
 	"A new frontier" should "should be empty" in {
@@ -16,24 +15,27 @@ class AStarGraphFrontierSpec extends FlatSpec with BeforeAndAfterEach with Match
   }
 
 	"A non empty frontier" should "should not be empty" in {
-    frontier.add(Node(null, 'op, "one", 0, 0))
+    frontier = frontier.add(Node(null, 'op, "one", 0, 0))
+
     frontier.isEmpty should be (false)
   }
 
   "A frontier with one node" should "be empty after retrieving that node" in {
     val node = Node(null, 'op, "one", 0, 0)
-    frontier.add(node)
+    frontier = frontier.add(node)
 
-    frontier.next should be (node)
+    frontier.head should be (node)
+    frontier = frontier.tail
+
     frontier.isEmpty should be (true)
   }
 
   "A frontier" should "not accept a node that has already been discovered" in {
     val node1 = Node(null, 'op, "one", 0, 0)
     val node2 = Node(node1, 'op, "one", 0, 0)
-    frontier.add(node1)
-    frontier.add(node2)
-    frontier.next
+
+    frontier = frontier.add(node1).add(node2)
+    frontier = frontier.tail
 
     frontier.isEmpty should be (true)
   }
@@ -41,20 +43,24 @@ class AStarGraphFrontierSpec extends FlatSpec with BeforeAndAfterEach with Match
   "A frontier" should "replace an existing node with a better one" in {
     val node1 = Node(null, 'op, "one", 1, 2)
     val node2 = Node(node1, 'op, "one", 1, 1)
-    frontier.add(node1)
-    frontier.add(node2)
 
-    frontier.next should be theSameInstanceAs node2
+    frontier = frontier.add(node1).add(node2)
+
+    frontier.head should be theSameInstanceAs node2
+    frontier = frontier.tail
+
     frontier.isEmpty should be (true)
   }
 
   "A frontier" should "not replace an existing node with a worse one" in {
     val node1 = Node(null, 'op, "one", 1, 1)
     val node2 = Node(node1, 'op, "one", 1, 2)
-    frontier.add(node1)
-    frontier.add(node2)
 
-    frontier.next should be theSameInstanceAs node1
+    frontier = frontier.add(node1).add(node2)
+
+    frontier.head should be theSameInstanceAs node1
+    frontier = frontier.tail
+
     frontier.isEmpty should be (true)
   }
 
@@ -62,13 +68,18 @@ class AStarGraphFrontierSpec extends FlatSpec with BeforeAndAfterEach with Match
     val node1 = Node(null, 'op, "one", 0, 0)
     val node2 = Node(node1, 'op, "two", 1, 1)
     val node3 = Node(node1, 'op, "three", 1, 2)
-    frontier.add(node1)
-    frontier.add(node3)
-    frontier.add(node2)
 
-    frontier.next should be theSameInstanceAs node1
-    frontier.next should be theSameInstanceAs node2
-    frontier.next should be theSameInstanceAs node3
+    frontier = frontier.add(node1).add(node3).add(node2)
+
+    frontier.head should be theSameInstanceAs node1
+    frontier = frontier.tail
+
+    frontier.head should be theSameInstanceAs node2
+    frontier = frontier.tail
+
+    frontier.head should be theSameInstanceAs node3
+    frontier = frontier.tail
+
     frontier.isEmpty should be (true)
   }
 
@@ -76,13 +87,18 @@ class AStarGraphFrontierSpec extends FlatSpec with BeforeAndAfterEach with Match
     val node1 = Node(null, 'op, "one", 0, 0)
     val node2 = Node(node1, 'op, "two", 1, 1)
     val node3 = Node(node1, 'op, "three", 1, 1)
-    frontier.add(node1)
-    frontier.add(node3)
-    frontier.add(node2)
 
-    frontier.next should be theSameInstanceAs node1
-    frontier.next should be theSameInstanceAs node3
-    frontier.next should be theSameInstanceAs node2
+    frontier = frontier.add(node1).add(node3).add(node2)
+
+    frontier.head should be theSameInstanceAs node1
+    frontier = frontier.tail
+
+    frontier.head should be theSameInstanceAs node3
+    frontier = frontier.tail
+
+    frontier.head should be theSameInstanceAs node2
+    frontier = frontier.tail
+
     frontier.isEmpty should be(true)
   }
 }
