@@ -1,30 +1,15 @@
 package ai.sokoban
 
 case class Game(dimensions: Point, walls: Set[Point], storage: Set[Point]) {
-  var restricted = Set[Point]()
-
   // Corners
-  walls.foreach(wall => {
-    if (walls.contains(wall.move('R)) &&
-      walls.contains(wall.move('U)) &&
-      !storage.contains(wall.move('R).move('U)))
-      restricted += wall.move('R).move('U)
+  var restricted: Set[Point] = for {
+    wall <- walls
+    (a, b) <- List('U -> 'R, 'U -> 'L, 'D -> 'R, 'D -> 'L)
+    if (isCorner(wall, a, b))
+  } yield wall.move(a).move(b)
 
-    if (walls.contains(wall.move('L)) &&
-      walls.contains(wall.move('U)) &&
-      !storage.contains(wall.move('L).move('U)))
-      restricted += wall.move('L).move('U)
-
-    if (walls.contains(wall.move('R)) &&
-      walls.contains(wall.move('D)) &&
-      !storage.contains(wall.move('R).move('D)))
-      restricted += wall.move('R).move('D)
-
-    if (walls.contains(wall.move('L)) &&
-      walls.contains(wall.move('D)) &&
-      !storage.contains(wall.move('L).move('D)))
-      restricted += wall.move('L).move('D)
-  })
+  private def isCorner(wall: Point, a: Symbol, b: Symbol) =
+    isWall(wall.move(a)) && isWall(wall.move(b)) && !isStorage(wall.move(a).move(b))
 
   // Restrict points between corners along vertical walls
   restricted.foreach(a =>
@@ -121,9 +106,7 @@ case class Game(dimensions: Point, walls: Set[Point], storage: Set[Point]) {
   def isRestricted(point: Point) = restricted contains point
 
   private def isFrozen(state: GameState, point: Point , a: Symbol, b: Symbol) =
-    isWall(point.move(a)) &&
-    state.isBox(point.move(b)) &&
-    isWall(point.move(a).move(b))
+    isWall(point.move(a)) && state.isBox(point.move(b)) && isWall(point.move(a).move(b))
 
   def canMove(state: GameState, direction: Symbol) = {
     val destination = state.player.move(direction)
