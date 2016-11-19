@@ -11,20 +11,20 @@ class SokobanCountGoalsSpec extends FlatSpec with Matchers {
     (new SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game)), initializer.gameState)
 	}
 
-  "CountGoals on level15" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level15")
+  "CountGoals on level5" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level05")
     val path = Search.greedyBestFirst(graph, graph.get(initialState)).operations
     //println("Level 15: " + path)
   }
 
-  "CountGoals on level-example4" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level-example4")
+  "CountGoals on level10" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level10")
     val path = Search.greedyBestFirst(graph, graph.get(initialState)).operations
     //println("Example 4 Boxes: " + path)
   }
 
-  "CountGoals on level-example5" should "be fast" in {
-    val (graph, initialState) = loadLevel("resources/level-example5")
+  "CountGoals on level15" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level15")
     val path = Search.greedyBestFirst(graph, graph.get(initialState)).operations
     //println("Example 5 Boxes: " + path)
   }
