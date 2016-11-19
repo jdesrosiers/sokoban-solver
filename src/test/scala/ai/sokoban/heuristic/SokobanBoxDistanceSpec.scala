@@ -11,7 +11,6 @@ class SokobanBoxDistanceSpec extends FlatSpec with Matchers {
     (new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game)), initializer.gameState)
 	}
 
-  /*
   "CountGoals on level15" should "be fast" in {
     val (graph, initialState) = loadLevel("resources/level15")
     val path = Search.aStar(graph, graph.get(initialState)).operations
@@ -36,10 +35,17 @@ class SokobanBoxDistanceSpec extends FlatSpec with Matchers {
     println("Example: " + path.map(_.name).mkString(" "))
   }
 
+  /*
+  "CountGoals on level50" should "be fast" in {
+    val (graph, initialState) = loadLevel("resources/level50")
+    val path = Search.aStar(graph, graph.get(initialState)).operations
+    println("Level 50: " + path.map(_.name).mkString(" "))
+  }
+
   "CountGoals on level70" should "be fast" in {
     val (graph, initialState) = loadLevel("resources/level70")
     val path = Search.aStar(graph, graph.get(initialState)).operations
-    println("Level 50: " + path.map(_.name).mkString(" "))
+    println("Level 70: " + path.map(_.name).mkString(" "))
   }
   */
 }

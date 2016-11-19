@@ -13,9 +13,7 @@ case class GameState(player: Point, boxes: Set[Point]) extends Comparable[GameSt
     GameState(playerDestination, boxesDestination)
   }
 
-  def compareTo(state: GameState) = {
-    str(this) compareTo str(state)
-  }
+  def compareTo(state: GameState) = str(this) compareTo str(state)
 
   private def str(state: GameState) = (state.player :: state.boxes.toList).map { case Point(x, y) => x + " " + y }.mkString(" ")
 }

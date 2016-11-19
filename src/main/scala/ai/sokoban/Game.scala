@@ -116,42 +116,27 @@ case class Game(dimensions: Point, walls: Set[Point], storage: Set[Point]) {
     })
   )
 
-  def isWall(point: Point): Boolean = walls contains point
-  def isStorage(point: Point): Boolean = storage contains point
-  def isRestricted(point: Point): Boolean = restricted contains point
+  def isWall(point: Point) = walls contains point
+  def isStorage(point: Point) = storage contains point
+  def isRestricted(point: Point) = restricted contains point
 
-  def canMove(state: GameState, direction: Symbol): Boolean = {
+  private def isFrozen(state: GameState, point: Point , a: Symbol, b: Symbol) =
+    isWall(point.move(a)) &&
+    state.isBox(point.move(b)) &&
+    isWall(point.move(a).move(b))
+
+  def canMove(state: GameState, direction: Symbol) = {
     val destination = state.player.move(direction)
 
     if (isWall(destination)) false
     else if (state.isBox(destination)) {
       val boxDestination = destination.move(direction)
-      var isFrozen = false
-      /*
-      if (!isStorage(boxDestination)) {
-        val neighbors1 = List('U, 'D, 'L, 'R).map(boxDestination.move)
-        val boxNeighbors1 = neighbors1.filter(state.isBox)
-        val wallNeighbors1 = neighbors1.filter(isWall)
-        boxNeighbors1.foreach(n => {
-          // wall neighboring this box
-          val neighbors2 = List('U, 'D, 'L, 'R).map(n.move)
-          val wallNeighbors2 = neighbors2.filter(isWall)
+      val frozen = !isStorage(boxDestination) && List('U, 'D, 'L, 'R).exists(isFrozen(state, boxDestination, direction, _))
 
-          wallNeighbors2.foreach(n => {
-            val neighbors3 = List('U, 'D, 'L, 'R).map(n.move)
-            val wallNeighbors3 = neighbors3.filter(isWall)
-            if (wallNeighbors1.intersect(wallNeighbors3).size > 0)
-              isFrozen = true
-          })
-        })
-      }
-      */
-      !isWall(boxDestination) && !state.isBox(boxDestination) && !isRestricted(boxDestination) && !isFrozen
+      !isWall(boxDestination) && !state.isBox(boxDestination) && !isRestricted(boxDestination) && !frozen
     } else true
   }
 
   def allowedMoves(state: GameState) = List('L, 'R, 'U, 'D).filter(canMove(state, _))
-  def isGoal(state: GameState): Boolean = {
-    storage.forall(state.isBox)
-  }
+  def isGoal(state: GameState) = storage.forall(state.isBox)
 }
