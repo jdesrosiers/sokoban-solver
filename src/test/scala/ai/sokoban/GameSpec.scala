@@ -29,7 +29,7 @@ class GameSpec extends FlatSpec with Matchers {
   "restricted points" should "not be in allowed moves" in {
     val initializer = new Initializer(Source.fromFile("resources/level03"))
     val game = initializer.game
-    val gameState = initializer.gameState.move(game, 'L).move(game, 'L).move(game, 'U)
+    val gameState = initializer.gameState.move('L).move('L).move('U)
 
     game.allowedMoves(gameState) should be (List('D))
   }

@@ -3,7 +3,7 @@ package ai.sokoban
 case class GameState(player: Point, boxes: Set[Point]) extends Comparable[GameState] {
   def isBox(point: Point): Boolean = boxes contains point
 
-  def move(game: Game, direction: Symbol): GameState = {
+  def move(direction: Symbol): GameState = {
     val playerDestination = player.move(direction)
     val boxesDestination = if (isBox(playerDestination))
       boxes - playerDestination + playerDestination.move(direction)

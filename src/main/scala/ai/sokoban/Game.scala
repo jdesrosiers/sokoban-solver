@@ -1,6 +1,6 @@
 package ai.sokoban
 
-case class Game(dimensions: Point, walls: Set[Point], storage: Set[Point]) {
+case class Game(walls: Set[Point], storage: Set[Point]) {
   val restricted = {
     def isCorner(wall: Point, a: Symbol, b: Symbol) =
       isWall(wall.move(a)) && isWall(wall.move(b)) && !isStorage(wall.move(a).move(b))
