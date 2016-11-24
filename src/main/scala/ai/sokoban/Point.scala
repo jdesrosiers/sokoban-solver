@@ -8,5 +8,7 @@ case class Point(x: Int, y: Int) {
     case 'L => Point(x - 1, y)
   }
 
+  def neighbors = List('U, 'R, 'D, 'L).map(move)
+
   def manhattanDistance(p: Point) = Math.abs(x - p.x) + Math.abs(y - p.y)
 }

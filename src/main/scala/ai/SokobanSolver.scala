@@ -11,13 +11,13 @@ object SokobanSolver {
   def main(args: Array[String]): Unit = {
     val level = args(0)
 
+    val startTime = System.nanoTime()
     val initializer = new Initializer(Source.fromFile(level))
     val graph = new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
     val initialState = initializer.gameState
 
     println("Using A* with BoxDistance Heuristic")
     println("Searching ...")
-    val startTime = System.nanoTime()
     val path = Search.aStar(graph, graph.get(initialState)).operations
     val endTime = System.nanoTime()
 

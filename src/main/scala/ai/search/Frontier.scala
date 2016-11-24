@@ -5,6 +5,7 @@ import scala.collection.immutable.Queue
 import scala.collection.immutable.SortedSet
 
 trait Frontier[A] {
+  def visited: Set[A]
   def add(node: Node[A]): Frontier[A]
   def isEmpty: Boolean
   def head: Node[A]
@@ -13,6 +14,7 @@ trait Frontier[A] {
 
 object Frontier {
   case class DepthFirstGraphFrontier[A](discovered: Set[A], frontier: Stack[Node[A]]) extends Frontier[A] {
+    def visited = discovered
     def isEmpty = frontier.isEmpty
     def tail = DepthFirstGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
@@ -24,6 +26,7 @@ object Frontier {
   }
 
   case class BreadthFirstGraphFrontier[A](discovered: Set[A], frontier: Queue[Node[A]]) extends Frontier[A] {
+    def visited = discovered
     def isEmpty = frontier.isEmpty
     def tail = BreadthFirstGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
@@ -35,6 +38,7 @@ object Frontier {
   }
 
   case class UniformCostGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
+    def visited = discovered.keys.toSet
     def isEmpty = frontier.isEmpty
     def tail = UniformCostGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
@@ -49,6 +53,7 @@ object Frontier {
   }
 
   case class GreedyBestFirstGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
+    def visited = discovered.keys.toSet
     def isEmpty = frontier.isEmpty
     def tail = GreedyBestFirstGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
@@ -63,6 +68,7 @@ object Frontier {
   }
 
   case class AStarGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
+    def visited = discovered.keys.toSet
     def isEmpty = frontier.isEmpty
     def tail = AStarGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
