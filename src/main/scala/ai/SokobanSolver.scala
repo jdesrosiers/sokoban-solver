@@ -3,8 +3,10 @@ package ai
 import scala.io.Source
 
 import ai.search.Search
+import ai.search.DefaultHeuristic
 import ai.sokoban.{Initializer, SokobanGraph}
 import ai.sokoban.heuristic.BoxDistanceHeuristic
+import ai.sokoban.heuristic.CountGoalsHeuristic
 
 object SokobanSolver {
   // run {level} --search={search} --heuristic={heuristic}
@@ -13,12 +15,19 @@ object SokobanSolver {
 
     val startTime = System.nanoTime()
     val initializer = new Initializer(Source.fromFile(level))
-    val graph = new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
+    //val graph = new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
+    //val graph = new SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game))
+    val graph = new SokobanGraph(initializer.game, DefaultHeuristic())
     val initialState = initializer.gameState
 
-    println("Using A* with BoxDistance Heuristic")
+    //println("Using A* with BoxDistance Heuristic")
+    println("Using Breadth First Search")
     println("Searching ...")
-    val path = Search.aStar(graph, graph.get(initialState)).operations
+    val path = Search.breadthFirst(graph, graph.get(initialState)).operations
+    //val path = Search.depthFirst(graph, graph.get(initialState)).operations
+    //val path = Search.uniformCost(graph, graph.get(initialState)).operations
+    //val path = Search.greedyBestFirst(graph, graph.get(initialState)).operations
+    //val path = Search.aStar(graph, graph.get(initialState)).operations
     val endTime = System.nanoTime()
 
     println("Path found: " + path.map(_.name).mkString(" "))

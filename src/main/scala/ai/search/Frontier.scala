@@ -37,47 +37,17 @@ object Frontier {
         this
   }
 
-  case class UniformCostGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
+  case class PriorityGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
     def visited = discovered.keys.toSet
     def isEmpty = frontier.isEmpty
-    def tail = UniformCostGraphFrontier(discovered, frontier.tail)
+    def tail = PriorityGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
     def add(node: Node[A]) =
       discovered.get(node.state) match {
-        case Some(existing) if node.g < existing.g =>
-          UniformCostGraphFrontier(discovered + (node.state -> node), frontier - existing + node)
+        case Some(existing) if frontier.ordering.lt(node, existing) =>
+          PriorityGraphFrontier(discovered + (node.state -> node), frontier - existing + node)
         case None =>
-          UniformCostGraphFrontier(discovered + (node.state -> node), frontier + node)
-        case _ => this
-      }
-  }
-
-  case class GreedyBestFirstGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
-    def visited = discovered.keys.toSet
-    def isEmpty = frontier.isEmpty
-    def tail = GreedyBestFirstGraphFrontier(discovered, frontier.tail)
-    def head = frontier.head
-    def add(node: Node[A]) =
-      discovered.get(node.state) match {
-        case Some(existing) if node.h < existing.h =>
-          GreedyBestFirstGraphFrontier(discovered + (node.state -> node), frontier - existing + node)
-        case None =>
-          GreedyBestFirstGraphFrontier(discovered + (node.state -> node), frontier + node)
-        case _ => this
-      }
-  }
-
-  case class AStarGraphFrontier[A](discovered: Map[A, Node[A]], frontier: SortedSet[Node[A]]) extends Frontier[A] {
-    def visited = discovered.keys.toSet
-    def isEmpty = frontier.isEmpty
-    def tail = AStarGraphFrontier(discovered, frontier.tail)
-    def head = frontier.head
-    def add(node: Node[A]) =
-      discovered.get(node.state) match {
-        case Some(existing) if node.f < existing.f =>
-          AStarGraphFrontier(discovered + (node.state -> node), frontier - existing + node)
-        case None =>
-          AStarGraphFrontier(discovered + (node.state -> node), frontier + node)
+          PriorityGraphFrontier(discovered + (node.state -> node), frontier + node)
         case _ => this
       }
   }
@@ -86,15 +56,14 @@ object Frontier {
   def breadthFirst[A] = BreadthFirstGraphFrontier(Set[A](), Queue[Node[A]]())
   def uniformCost[A <: Comparable[A]] = {
     val ordering = Ordering.by((n: Node[A]) => (n.g, n.state))
-    UniformCostGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
+    PriorityGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
   }
   def greedyBestFirst[A <: Comparable[A]] = {
     val ordering = Ordering.by((n: Node[A]) => (n.h, n.state))
-    GreedyBestFirstGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
+    PriorityGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
   }
   def aStar[A <: Comparable[A]] = {
     val ordering = Ordering.by((n: Node[A]) => (n.f, n.state))
-    AStarGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
+    PriorityGraphFrontier(Map[A, Node[A]](), SortedSet[Node[A]]()(ordering))
   }
 }
-
