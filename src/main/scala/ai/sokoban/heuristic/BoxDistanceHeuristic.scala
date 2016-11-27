@@ -8,8 +8,7 @@ case class BoxDistanceHeuristic(game: Game) extends Heuristic[GameState] {
 
   def h(state: GameState) = {
     val boxes = state.boxes.toList
-    3 * (state.player :: storage).map((p: Point) => minDistance(p, boxes)).sum + state.boxes.count(!game.isStorage(_))
+    3 * ((state.player :: storage).map((p: Point) => minDistance(p, boxes)).sum - 1) + state.boxes.count(!game.isStorage(_))
   }
-  private def minDistance(storage: Point, boxes: List[Point]) =
-    boxes.map((p: Point) => p.manhattanDistance(storage)).min
+  private def minDistance(storage: Point, boxes: List[Point]) = boxes.map(storage.manhattanDistance).min
 }

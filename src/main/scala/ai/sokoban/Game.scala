@@ -30,5 +30,5 @@ case class Game(walls: Set[Point], storage: Set[Point], restricted: Set[Point]) 
   }
 
   def allowedMoves(state: GameState) = List('L, 'R, 'U, 'D).filter(canMove(state, _))
-  def isGoal(state: GameState) = storage.forall(state.isBox)
+  def isGoal(state: GameState) = state.boxes.forall(isStorage)
 }
