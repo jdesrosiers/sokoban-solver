@@ -1,6 +1,6 @@
 package ai.sokoban
 
-case class PullGame(walls: Set[Point], storage: Point) {
+case class PullGame(walls: Set[Point]) {
   def isWall(point: Point) = walls contains point
 
   def canMove(state: PullGameState, direction: Symbol) = {
