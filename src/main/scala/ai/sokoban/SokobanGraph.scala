@@ -2,7 +2,7 @@ package ai.sokoban
 
 import ai.search.{Graph, Node, Heuristic}
 
-case class SokobanGraph(game: Game, heuristic: Heuristic[GameState]) extends Graph[GameState] {
+class SokobanGraph(game: Game, heuristic: Heuristic[GameState]) extends Graph[GameState] {
   def g(from: GameState, to: GameState) = 1
   def h(state: GameState) = heuristic.h(state)
   def successors(state: GameState) =

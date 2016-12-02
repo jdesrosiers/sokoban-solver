@@ -20,70 +20,41 @@ class Initializer(serializedBoard: Source) {
   private def isWall(point: Point) = walls contains point
   private def isStorage(point: Point) = storage contains point
 
-  val restricted = {
-    def isCorner(wall: Point, a: Symbol, b: Symbol) =
-      isWall(wall.move(a)) && isWall(wall.move(b)) && !isStorage(wall.move(a).move(b))
+  val reachable = {
+    val game = PullGame(walls)
+    val graph = new SokobanPullGraph(game)
+    val state = PullGameState(player, null)
 
-    def pathNeighborsWall(path: Seq[Point]) =
-      List('U, 'D, 'R, 'L).exists(direction => path.forall(p => isWall(p.move(direction))))
-
-    val corners = for {
-      wall <- walls
-      (a, b) <- List('U -> 'R, 'U -> 'L, 'D -> 'R, 'D -> 'L)
-      if (isCorner(wall, a, b))
-    } yield wall.move(a).move(b)
-
-    val horizontalCornerPaths = for {
-      a <- corners
-      b <- corners
-      path = for (x <- a.x to b.x) yield Point(x, a.y)
-      p <- path
-      if a.y == b.y && a.x < b.x && pathNeighborsWall(path) && !path.exists(isStorage)
-    } yield p
-
-    val verticalCornerPaths = for {
-      a <- corners
-      b <- corners
-      path = for (y <- a.y to b.y) yield Point(a.x, y)
-      p <- path
-      if a.x == b.x && a.y < b.y && pathNeighborsWall(path) && !path.exists(isStorage)
-    } yield p
-
-    val reachable = {
-      val game = Game(walls, Set(), Set())
-      val graph = SokobanGraph(game, DefaultHeuristic())
-      val state = GameState(player, Set(Point(1, 1)))
-
-      Search.breadthFirst(graph, graph.get(state)).visited.map { case GameState(player, _) => player }
-    }
-
-    reachable intersect (corners ++ horizontalCornerPaths ++ verticalCornerPaths)
+    Search.breadthFirst(graph, graph.get(state)).visited.map { case PullGameState(player, _) => player }
   }
 
-  /*
   val restricted = {
     def boxVisited(box: Point) = {
       val game = PullGame(walls)
-      val graph = SokobanPullGraph(game)
+      val graph = new SokobanPullGraph(game)
       val initialNodes = for (neighbor <- box.neighbors if !game.isWall(neighbor)) yield
         graph.get(PullGameState(neighbor, box))
 
       Search.breadthFirst(graph, initialNodes).visited.map { case PullGameState(_, box) => box }
     }
 
-    def reachable(player: Point) = {
-      val game = PullGame(walls)
-      val graph = SokobanPullGraph(game)
-      val state = PullGameState(player, null)
-
-      Search.breadthFirst(graph, graph.get(state)).visited.map { case PullGameState(player, _) => player }
-    }
-
     val visited = for (box <- storage; point <- boxVisited(box)) yield point
 
-    reachable(player) -- visited
+    reachable -- visited
   }
-  */
+
+  private def actualDistance(from: Point) = {
+    val game = Game(walls, storage, restricted)
+    val graph = new SokobanGraph(game, DefaultHeuristic())
+    val initialNodes = for (neighbor <- from.neighbors if !game.isWall(neighbor)) yield
+      graph.get(GameState(neighbor, Set(from)))
+
+    Search.breadthFirst(graph, initialNodes).node.depth
+  }
+
+  val boxDistance = (reachable -- restricted).foldLeft(Map[Point, Int]()) {
+    (acc, p) => acc + (p -> actualDistance(p))
+  }
 
   val game = Game(walls, storage, restricted)
   val gameState = GameState(player, boxes)

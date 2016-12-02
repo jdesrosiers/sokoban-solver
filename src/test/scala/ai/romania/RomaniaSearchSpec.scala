@@ -25,8 +25,8 @@ class RomaniaSearchSpec extends FlatSpec with Matchers {
     Search.depthFirst(graph, graph.get("Hirsova")).states should be (expected)
   }
 
-  "DepthFirst from Arad -> Bucharest" should "be Arad -> Timisoara -> Lugoj -> Mehadia -> Dobreta -> Craiova -> Pitesti -> Bucharest" in {
-    val expected = List("Arad", "Timisoara", "Lugoj", "Mehadia", "Dobreta", "Craiova", "Pitesti", "Bucharest")
+  "DepthFirst from Arad -> Bucharest" should "be Arad -> Sibiu -> RimnicuVilcea -> Pitesti -> Bucharest" in {
+    val expected = List("Arad", "Sibiu", "RimnicuVilcea", "Pitesti", "Bucharest")
     Search.depthFirst(graph, graph.get("Arad")).states should be (expected)
   }
 

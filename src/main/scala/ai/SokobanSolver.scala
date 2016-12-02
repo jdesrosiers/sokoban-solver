@@ -14,10 +14,10 @@ object SokobanSolver {
 
     val startTime = System.nanoTime()
     val initializer = new Initializer(Source.fromFile(level))
-    //val graph = SokobanGraph(initializer.game, ActualDistanceHeuristic(initializer.game))
-    //val graph = SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
-    //val graph = SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game))
-    val graph = SokobanGraph(initializer.game, DefaultHeuristic())
+    //val graph = new SokobanGraph(initializer.game, ActualDistanceHeuristic(initializer.game, initializer.boxDistance))
+    //val graph = new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
+    //val graph = new SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game))
+    val graph = new SokobanGraph(initializer.game, DefaultHeuristic())
     val initialState = initializer.gameState
 
     //println("Using A* with BoxDistance Heuristic")
