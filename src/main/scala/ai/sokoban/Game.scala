@@ -1,6 +1,6 @@
 package ai.sokoban
 
-case class Game(walls: Set[Point], storage: Set[Point], restricted: Set[Point]) {
+case class Game(walls: Set[Point], storage: Set[Point], restricted: Set[Point], boxDistance: Map[Point, Int], playerDistance: Map[Point, Int]) {
   def isWall(point: Point) = walls contains point
   def isStorage(point: Point) = storage contains point
   def isRestricted(point: Point) = restricted contains point
@@ -10,8 +10,8 @@ case class Game(walls: Set[Point], storage: Set[Point], restricted: Set[Point]) 
       def isFrozen(a: Point, b: Point) =
         (game.isWall(a) || game.isWall(b)) ||
           (game.isRestricted(a) && game.isRestricted(b)) ||
-          (state.isBox(a) && isBoxFrozen(Game(game.walls + box, game.storage, game.restricted), state, a)) ||
-          (state.isBox(b) && isBoxFrozen(Game(game.walls + box, game.storage, game.restricted), state, b))
+          (state.isBox(a) && isBoxFrozen(Game(game.walls + box, storage, restricted, boxDistance, playerDistance), state, a)) ||
+          (state.isBox(b) && isBoxFrozen(Game(game.walls + box, storage, restricted, boxDistance, playerDistance), state, b))
 
       isFrozen(box.move('U), box.move('D)) && isFrozen(box.move('R), box.move('L))
     }

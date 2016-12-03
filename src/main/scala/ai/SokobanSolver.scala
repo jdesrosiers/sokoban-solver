@@ -3,32 +3,45 @@ package ai
 import scala.io.Source
 
 import ai.search.Search
-import ai.search.DefaultHeuristic
-import ai.sokoban.{Initializer, SokobanGraph}
-import ai.sokoban.heuristic.{ActualDistanceHeuristic, BoxDistanceHeuristic, CountGoalsHeuristic}
+import ai.search.{DefaultHeuristic, Heuristic}
+import ai.sokoban.{GameState, Initializer, SokobanGraph}
+import ai.sokoban.heuristic.{BoxDistanceHeuristic, CountGoalsHeuristic}
 
 object SokobanSolver {
-  // run {level} --search={search} --heuristic={heuristic}
+  // run --a={search-algorithm} --h={heuristic} {level}
   def main(args: Array[String]): Unit = {
-    val level = args(0)
+    val level = args.filterNot(_ startsWith "--").head
 
     val startTime = System.nanoTime()
+
     val initializer = new Initializer(Source.fromFile(level))
-    //val graph = new SokobanGraph(initializer.game, ActualDistanceHeuristic(initializer.game, initializer.boxDistance))
-    //val graph = new SokobanGraph(initializer.game, BoxDistanceHeuristic(initializer.game))
-    //val graph = new SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game))
-    val graph = new SokobanGraph(initializer.game, DefaultHeuristic())
+    val heuristic: Heuristic[GameState] =
+      if (args.contains("--h=CountGoals"))
+        CountGoalsHeuristic(initializer.game)
+      else if (args.contains("--h=BoxDistance"))
+        BoxDistanceHeuristic(initializer.game)
+      else
+        DefaultHeuristic()
+    val graph = new SokobanGraph(initializer.game, heuristic)
     val initialState = initializer.gameState
 
-    //println("Using A* with BoxDistance Heuristic")
-    println("Using Breadth First Search")
     println("Searching ...")
-    val result = Search.breadthFirst(graph, graph.get(initialState))
-    //val result = Search.depthFirst(graph, graph.get(initialState))
-    //val result = Search.iterativeDeepeningDepthFirst(graph, graph.get(initialState))
-    //val result = Search.uniformCost(graph, graph.get(initialState))
-    //val result = Search.greedyBestFirst(graph, graph.get(initialState))
-    //val result = Search.aStar(graph, graph.get(initialState))
+    val result =
+      if (args.contains("--a=bfs"))
+        Search.breadthFirst(graph, graph.get(initialState))
+      else if (args.contains("--a=dfs"))
+        Search.depthFirst(graph, graph.get(initialState))
+      else if (args.contains("--a=iddfs"))
+        Search.iterativeDeepeningDepthFirst(graph, graph.get(initialState))
+      else if (args.contains("--a=uc"))
+        Search.iterativeDeepeningDepthFirst(graph, graph.get(initialState))
+      else if (args.contains("--a=gbf"))
+        Search.greedyBestFirst(graph, graph.get(initialState))
+      else if (args.contains("--a=aStar"))
+        Search.aStar(graph, graph.get(initialState))
+      else
+        null
+
     val endTime = System.nanoTime()
 
     println("Path found: " + result.operations.map(_.name).mkString(" "))

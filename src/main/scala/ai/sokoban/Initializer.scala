@@ -17,12 +17,9 @@ class Initializer(serializedBoard: Source) {
   private def parseLine(line: String): Array[Int] = line.split(" ").map(_.toInt)
   private def toPoints(input: Array[Int]): Iterator[Point] = input.tail.sliding(2, 2).map(toPoint)
 
-  private def isWall(point: Point) = walls contains point
-  private def isStorage(point: Point) = storage contains point
-
   val reachable = {
     val game = PullGame(walls)
-    val graph = new SokobanPullGraph(game)
+    val graph = SokobanPullGraph(game)
     val state = PullGameState(player, null)
 
     Search.breadthFirst(graph, graph.get(state)).visited.map { case PullGameState(player, _) => player }
@@ -31,7 +28,7 @@ class Initializer(serializedBoard: Source) {
   val restricted = {
     def boxVisited(box: Point) = {
       val game = PullGame(walls)
-      val graph = new SokobanPullGraph(game)
+      val graph = SokobanPullGraph(game)
       val initialNodes = for (neighbor <- box.neighbors if !game.isWall(neighbor)) yield
         graph.get(PullGameState(neighbor, box))
 
@@ -43,19 +40,38 @@ class Initializer(serializedBoard: Source) {
     reachable -- visited
   }
 
-  private def actualDistance(from: Point) = {
-    val game = Game(walls, storage, restricted)
-    val graph = new SokobanGraph(game, DefaultHeuristic())
-    val initialNodes = for (neighbor <- from.neighbors if !game.isWall(neighbor)) yield
+  /*
+  // Manhattan Distance
+  private def pushDistance(from: Point) = storage.map(from.manhattanDistance).min
+  private def moveDistance = pushDistance _
+  */
+
+  // Actual Distance
+  private def pushDistance(from: Point) = {
+    val pushGame = Game(walls, storage, restricted, Map(), Map())
+    val graph = SokobanGraph(pushGame, DefaultHeuristic())
+    val initialNodes = for (neighbor <- from.neighbors if !pushGame.isWall(neighbor)) yield
       graph.get(GameState(neighbor, Set(from)))
 
     Search.breadthFirst(graph, initialNodes).node.depth
   }
 
-  val boxDistance = (reachable -- restricted).foldLeft(Map[Point, Int]()) {
-    (acc, p) => acc + (p -> actualDistance(p))
+  private def moveDistance(from: Point) = {
+    val moveGame = Game(walls, storage, restricted, Map(), Map())
+    val graph = SokobanMoveGraph(moveGame, DefaultHeuristic())
+    val state = GameState(from, Set())
+
+    Search.breadthFirst(graph, graph.get(state)).node.depth
   }
 
-  val game = Game(walls, storage, restricted)
+  val boxDistance = (reachable -- restricted).foldLeft(Map[Point, Int]()) {
+    (acc, p) => acc + (p -> pushDistance(p))
+  }
+
+  val playerDistance = reachable.foldLeft(Map[Point, Int]()) {
+    (acc, p) => acc + (p -> moveDistance(p))
+  }
+
+  val game = Game(walls, storage, restricted, boxDistance, playerDistance)
   val gameState = GameState(player, boxes)
 }
