@@ -2,7 +2,7 @@ package ai.sokoban
 
 import scala.io.Source
 
-import ai.search.{DefaultHeuristic, Search}
+import ai.search.Search
 
 class Initializer(serializedBoard: Source) {
   private val iter = serializedBoard.getLines
@@ -40,38 +40,6 @@ class Initializer(serializedBoard: Source) {
     reachable -- visited
   }
 
-  /*
-  // Manhattan Distance
-  private def pushDistance(from: Point) = storage.map(from.manhattanDistance).min
-  private def moveDistance = pushDistance _
-  */
-
-  // Actual Distance
-  private def pushDistance(from: Point) = {
-    val pushGame = Game(walls, storage, restricted, Map(), Map())
-    val graph = SokobanGraph(pushGame, DefaultHeuristic())
-    val initialNodes = for (neighbor <- from.neighbors if !pushGame.isWall(neighbor)) yield
-      graph.get(GameState(neighbor, Set(from)))
-
-    Search.breadthFirst(graph, initialNodes).node.depth
-  }
-
-  private def moveDistance(from: Point) = {
-    val moveGame = Game(walls, storage, restricted, Map(), Map())
-    val graph = SokobanMoveGraph(moveGame, DefaultHeuristic())
-    val state = GameState(from, Set())
-
-    Search.breadthFirst(graph, graph.get(state)).node.depth
-  }
-
-  val boxDistance = (reachable -- restricted).foldLeft(Map[Point, Int]()) {
-    (acc, p) => acc + (p -> pushDistance(p))
-  }
-
-  val playerDistance = reachable.foldLeft(Map[Point, Int]()) {
-    (acc, p) => acc + (p -> moveDistance(p))
-  }
-
-  val game = Game(walls, storage, restricted, boxDistance, playerDistance)
-  val gameState = GameState(player, boxes)
+  val game = Game(walls, storage intersect reachable, restricted, reachable)
+  val gameState = GameState(player, boxes intersect reachable)
 }
