@@ -36,7 +36,7 @@ object SokobanSolver {
       else if (args.contains("--a=iddfs"))
         Search.iterativeDeepeningDepthFirst(graph, graph.get(initialState))
       else if (args.contains("--a=uc"))
-        Search.iterativeDeepeningDepthFirst(graph, graph.get(initialState))
+        Search.uniformCost(graph, graph.get(initialState))
       else if (args.contains("--a=gbf"))
         Search.greedyBestFirst(graph, graph.get(initialState))
       else if (args.contains("--a=aStar"))
