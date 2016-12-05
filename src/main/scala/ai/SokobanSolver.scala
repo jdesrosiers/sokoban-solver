@@ -5,7 +5,7 @@ import scala.io.Source
 import ai.search.Search
 import ai.search.{DefaultHeuristic, Heuristic}
 import ai.sokoban.{GameState, Initializer, SokobanGraph}
-import ai.sokoban.heuristic.{BoxDistanceHeuristic, CountGoalsHeuristic}
+import ai.sokoban.heuristic.{BoxActualDistanceHeuristic, BoxManhattanDistanceHeuristic, CountGoalsHeuristic}
 
 object SokobanSolver {
   // run --a={search-algorithm} --h={heuristic} {level}
@@ -18,8 +18,10 @@ object SokobanSolver {
     val heuristic: Heuristic[GameState] =
       if (args.contains("--h=CountGoals"))
         CountGoalsHeuristic(initializer.game)
-      else if (args.contains("--h=BoxDistance"))
-        BoxDistanceHeuristic(initializer.game)
+      else if (args.contains("--h=BoxManhattanDistance"))
+        BoxManhattanDistanceHeuristic(initializer.game)
+      else if (args.contains("--h=BoxActualDistance"))
+        BoxActualDistanceHeuristic(initializer.game)
       else
         DefaultHeuristic()
     val graph = new SokobanGraph(initializer.game, heuristic)

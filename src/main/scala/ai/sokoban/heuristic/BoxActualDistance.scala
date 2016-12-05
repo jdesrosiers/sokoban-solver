@@ -3,16 +3,7 @@ package ai.sokoban.heuristic
 import ai.search.{Search, Heuristic, DefaultHeuristic}
 import ai.sokoban.{Game, GameState, Point, SokobanGraph, SokobanMoveGraph}
 
-case class BoxDistanceHeuristic(game: Game) extends Heuristic[GameState] {
-  private val storage = game.storage.toList
-
-  /*
-  // Manhattan Distance
-  private def pushDistance(from: Point) = game.storage.map(from.manhattanDistance).min
-  private def moveDistance = pushDistance _
-  */
-
-  // Actual Distance
+case class BoxActualDistanceHeuristic(game: Game) extends Heuristic[GameState] {
   private def pushDistance(from: Point) = {
     val graph = SokobanGraph(game, DefaultHeuristic())
     val initialNodes = for (neighbor <- from.neighbors if !game.isWall(neighbor)) yield
