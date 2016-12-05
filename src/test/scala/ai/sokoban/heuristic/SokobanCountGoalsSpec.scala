@@ -8,7 +8,7 @@ import scala.io.Source
 class SokobanCountGoalsSpec extends FlatSpec with Matchers {
 	def loadLevel(filename: String) = {
     val initializer = new Initializer(Source.fromFile(filename))
-    (new SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game)), initializer.gameState)
+    (SokobanGraph(initializer.game, CountGoalsHeuristic(initializer.game)), initializer.gameState)
 	}
 
   "CountGoals on level5" should "be fast" in {

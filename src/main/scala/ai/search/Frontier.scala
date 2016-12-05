@@ -1,6 +1,5 @@
 package ai.search
 
-import scala.collection.immutable.Stack
 import scala.collection.immutable.Queue
 import scala.collection.immutable.SortedSet
 
@@ -13,14 +12,14 @@ trait Frontier[A] {
 }
 
 object Frontier {
-  case class DepthFirstGraphFrontier[A](discovered: Set[A], frontier: Stack[Node[A]]) extends Frontier[A] {
+  case class DepthFirstGraphFrontier[A](discovered: Set[A], frontier: List[Node[A]]) extends Frontier[A] {
     def visited = discovered
     def isEmpty = frontier.isEmpty
     def tail = DepthFirstGraphFrontier(discovered, frontier.tail)
     def head = frontier.head
     def add(node: Node[A]) =
       if (!discovered.contains(node.state))
-        DepthFirstGraphFrontier(discovered + node.state, frontier.push(node))
+        DepthFirstGraphFrontier(discovered + node.state, node :: frontier)
       else
         this
   }
@@ -52,7 +51,7 @@ object Frontier {
       }
   }
 
-  def depthFirst[A] = DepthFirstGraphFrontier(Set[A](), Stack[Node[A]]())
+  def depthFirst[A] = DepthFirstGraphFrontier(Set[A](), List[Node[A]]())
   def breadthFirst[A] = BreadthFirstGraphFrontier(Set[A](), Queue[Node[A]]())
   def uniformCost[A <: Comparable[A]] = {
     val ordering = Ordering.by((n: Node[A]) => (n.g, n.state))

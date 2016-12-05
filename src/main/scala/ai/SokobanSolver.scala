@@ -24,7 +24,7 @@ object SokobanSolver {
         BoxActualDistanceHeuristic(initializer.game)
       else
         DefaultHeuristic()
-    val graph = new SokobanGraph(initializer.game, heuristic)
+    val graph = SokobanGraph(initializer.game, heuristic)
     val initialState = initializer.gameState
 
     println("Searching ...")

@@ -11,7 +11,7 @@ class PullGameSpec extends FlatSpec with Matchers {
     val initializer = new Initializer(Source.fromFile(filename))
     val storage = initializer.storage.head
     val game = PullGame(initializer.walls)
-    val graph = new SokobanPullGraph(game)
+    val graph = SokobanPullGraph(game)
     val initialNodes = for (neighbor <- storage.neighbors if !game.isWall(neighbor)) yield
       graph.get(PullGameState(neighbor, storage))
 

@@ -7,7 +7,7 @@ import scala.io.Source
 class SokobanBreadthFirstSpec extends FlatSpec with Matchers {
 	def loadLevel(filename: String) = {
     val initializer = new Initializer(Source.fromFile(filename))
-    (new SokobanGraph(initializer.game, DefaultHeuristic()), initializer.gameState)
+    (SokobanGraph(initializer.game, DefaultHeuristic()), initializer.gameState)
 	}
 
   "BFS of level 1" should "find path D" in {
